@@ -1,0 +1,13 @@
+= Winstone -- Gem wrapper for winstone server
+
+= Installing Winstone
+
+== Installing Winstone
+    $ gem install winstone
+
+== Usage
+
+    winstone install  - installs winstone
+    winstone <params> -  runs the winstone server 
+    winstone lite <params> -  runs the winstone (lite) server 
+      

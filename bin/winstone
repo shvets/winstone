@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+
+$:.unshift(File::join(File::dirname(File::dirname(__FILE__)), "lib"))
+
+require 'rubygems' unless RUBY_VERSION =~ /1.9.*/
+require 'jar_wrapper'
+
+class WinstoneStarter
+
+  USAGE= <<-TEXT
+    Usage:
+      winstone help                 - this help
+      winstone install              - installs winstone
+      winstone <server-params>      - runs the winstone server
+      winstone lite <server-params> - runs winstone (lite) server
+  TEXT
+
+  def initialize
+    @wrapper = JarWrapper.new
+  end
+
+  def run
+    install_dir = ENV['HOME'] + "/.winstone/assets"
+    verion = "0.9.10"
+    
+    source1 = "http://surfnet.dl.sourceforge.net/project/winstone/winstone/v#{verion}/winstone-#{verion}.jar"
+    source2 = "http://surfnet.dl.sourceforge.net/project/winstone/winstone/v#{verion}/winstone-lite-#{verion}.jar"
+
+    target1 = install_dir + "/winstone-#{verion}.jar"
+    target2 = install_dir + "/winstone-lite-#{verion}.jar"
+
+    jar_file1 = install_dir + "/winstone-#{verion}.jar"
+    jar_file2 = install_dir + "/winstone-lite-#{verion}.jar"
+
+    case ARGV.shift
+      when /(-v)|(--version)/ then
+        puts "Version: #{File.open(File::dirname(__FILE__) + "/../VERSION").readlines().first}"
+      when 'install' then
+        @wrapper.install source1, target1
+        @wrapper.install source2, target2
+        puts
+      when 'help' then
+        puts USAGE and return
+      when 'lite' then
+        puts ARGV
+        @wrapper.run 'winstone', jar_file2, ["-Xmx1024m", "-Xss1024k" ], ARGV
+      else
+        puts ARGV
+        @wrapper.run 'winstone', jar_file1, ["-Xmx1024m", "-Xss1024k" ], ARGV
+    end
+  end
+end
+
+WinstoneStarter.new.run
