@@ -42,10 +42,8 @@ class WinstoneStarter
       when 'help' then
         puts USAGE and return
       when 'lite' then
-        puts ARGV
         @wrapper.run 'winstone', jar_file2, ["-Xmx1024m", "-Xss1024k" ], ARGV
       else
-        puts ARGV
         @wrapper.run 'winstone', jar_file1, ["-Xmx1024m", "-Xss1024k" ], ARGV
     end
   end
