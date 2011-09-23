@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 
-$:.unshift(File::join(File::dirname(File::dirname(__FILE__)), "lib"))
+#$:.unshift(File::join(File::dirname(File::dirname(__FILE__)), "lib"))
 
 require 'rubygems' unless RUBY_VERSION =~ /1.9.*/
 require 'jar_wrapper'
 
 class WinstoneStarter
+  WINSTONE_VERSION = "0.9.10"
 
   USAGE= <<-TEXT
     Usage:
@@ -18,20 +19,20 @@ class WinstoneStarter
 
   def initialize
     @wrapper = JarWrapper.new
+    @wrapper.java_opts = ["-Xmx1024m", "-Xss1024k" ]
   end
 
   def run
     install_dir = ENV['HOME'] + "/.winstone/assets"
-    verion = "0.9.10"
-    
-    source1 = "http://surfnet.dl.sourceforge.net/project/winstone/winstone/v#{verion}/winstone-#{verion}.jar"
-    source2 = "http://surfnet.dl.sourceforge.net/project/winstone/winstone/v#{verion}/winstone-lite-#{verion}.jar"
 
-    target1 = install_dir + "/winstone-#{verion}.jar"
-    target2 = install_dir + "/winstone-lite-#{verion}.jar"
+    source1 = "http://surfnet.dl.sourceforge.net/project/winstone/winstone/v#{WINSTONE_VERSION}/winstone-#{WINSTONE_VERSION}.jar"
+    source2 = "http://surfnet.dl.sourceforge.net/project/winstone/winstone/v#{WINSTONE_VERSION}/winstone-lite-#{WINSTONE_VERSION}.jar"
 
-    jar_file1 = install_dir + "/winstone-#{verion}.jar"
-    jar_file2 = install_dir + "/winstone-lite-#{verion}.jar"
+    target1 = install_dir + "/winstone-#{WINSTONE_VERSION}.jar"
+    target2 = install_dir + "/winstone-lite-#{WINSTONE_VERSION}.jar"
+
+    jar_file1 = install_dir + "/winstone-#{WINSTONE_VERSION}.jar"
+    jar_file2 = install_dir + "/winstone-lite-#{WINSTONE_VERSION}.jar"
 
     param = ARGV.length == 0 ? "" : ARGV.first
 
@@ -45,14 +46,16 @@ class WinstoneStarter
       when 'help' then
         puts USAGE and return
       when 'lite' then
-        @wrapper.run_jar 'winstone', jar_file2, ["-Xmx1024m", "-Xss1024k" ], ARGV
+        @wrapper.jar_file = jar_file2
+        @wrapper.run ARGV
        when 'tool' then
         ARGV.shift
-        main_class = ARGV.shift
-        class_path = jar_file1
-        @wrapper.run_cp 'winstone', class_path, main_class, ["-Xmx1024m", "-Xss1024k" ], ARGV
+        @wrapper.classpath = jar_file1
+        @wrapper.main_class = ARGV.shift
+        @wrapper.run ARGV
       else
-        @wrapper.run_jar 'winstone', jar_file1, ["-Xmx1024m", "-Xss1024k" ], ARGV
+         @wrapper.jar_file = jar_file1
+        @wrapper.run ARGV
     end
   end
 end

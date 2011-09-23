@@ -7,4 +7,6 @@ gem 'jeweler'
 gem "zip"
 gem "rubyzip" if WINDOZE
 
+gem "jar_wrapper"
+
 

@@ -7,7 +7,8 @@
 
 == Usage
 
-    winstone install  - installs winstone
-    winstone <params> -  runs the winstone server 
-    winstone lite <params> -  runs the winstone (lite) server 
+    winstone install            - installs winstone
+    winstone <params>           -  runs the winstone server
+    winstone lite <params>      -  runs the winstone (lite) server
+    winstone tool <tool-params> - runs winstone tool
       

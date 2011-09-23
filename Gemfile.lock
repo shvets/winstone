@@ -2,6 +2,11 @@ GEM
   remote: http://rubygems.org/
   specs:
     git (1.2.5)
+    jar_wrapper (0.1.0)
+      jeweler
+      jeweler
+      zip
+      zip
     jeweler (1.6.4)
       bundler (~> 1.0)
       git (>= 1.2.5)
@@ -13,5 +18,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  jar_wrapper
   jeweler
   zip
