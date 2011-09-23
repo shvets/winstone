@@ -1,6 +1,6 @@
 
   class Runner
-    def run name, jar_file, java_opts, args
+    def run_jar name, jar_file, java_opts, args
       @jar_file = jar_file
        
       #  forking = ARGV.include?("--fork") and ARGV.first != "install"
@@ -41,19 +41,28 @@
       #  return if no_runner
       #  return if jruby and not osx
       
-      construct_command(name, java_opts, args) do |command|
+      construct_command(true, name, java_opts, args) do |command|
         exec(command.join(" "))
       end
 
     end
-    
+
+    def run_cp name, class_path, main_class, java_opts, args
+      @main_class = main_class
+      @class_path = class_path
+      
+      construct_command(false, name, java_opts, args) do |command|
+        exec(command.join(" "))
+      end
+
+    end    
     # Trade in this Ruby instance for a JRuby instance, loading in a 
     # starter script and passing it some arguments.
     # If --jruby is passed, use the installed version of jruby, instead of 
     # our vendored jarred one (useful for gems).
-    def construct_command(name, java_opts=[], args="")
+    def construct_command(exec_mode, name, java_opts=[], args="")
       bin = File.expand_path(File.join(File.dirname(__FILE__), %w{.. .. bin #{name}}))
-      ENV['RUBYOPT'] = nil # disable other native args
+      #ENV['RUBYOPT'] = nil # disable other native args
 
       # Windows XP updates
 
@@ -67,7 +76,14 @@
       command.push(*java_args)
 
       command.push(*java_opts) if java_opts.length > 0
-       command.push("-jar", @jar_file)
+
+      if exec_mode
+        command.push("-jar", @jar_file)
+      else
+        command.push("-cp", @class_path)
+        command.push(@main_class)
+      end
+
       #command.push("-Djruby.memory.max=500m", "-Djruby.stack.max=1024k", "-cp", jruby_complete, "org.jruby.Main")
 
       command.push "--debug" if debug_mode?

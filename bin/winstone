@@ -13,6 +13,7 @@ class WinstoneStarter
       winstone install              - installs winstone
       winstone <server-params>      - runs the winstone server
       winstone lite <server-params> - runs winstone (lite) server
+      winstone tool <tool-params>   - runs winstone tool
   TEXT
 
   def initialize
@@ -32,7 +33,9 @@ class WinstoneStarter
     jar_file1 = install_dir + "/winstone-#{verion}.jar"
     jar_file2 = install_dir + "/winstone-lite-#{verion}.jar"
 
-    case ARGV.shift
+    param = ARGV.length == 0 ? "" : ARGV.first
+
+    case param
       when /(-v)|(--version)/ then
         puts "Version: #{File.open(File::dirname(__FILE__) + "/../VERSION").readlines().first}"
       when 'install' then
@@ -42,9 +45,14 @@ class WinstoneStarter
       when 'help' then
         puts USAGE and return
       when 'lite' then
-        @wrapper.run 'winstone', jar_file2, ["-Xmx1024m", "-Xss1024k" ], ARGV
+        @wrapper.run_jar 'winstone', jar_file2, ["-Xmx1024m", "-Xss1024k" ], ARGV
+       when 'tool' then
+        ARGV.shift
+        main_class = ARGV.shift
+        class_path = jar_file1
+        @wrapper.run_cp 'winstone', class_path, main_class, ["-Xmx1024m", "-Xss1024k" ], ARGV
       else
-        @wrapper.run 'winstone', jar_file1, ["-Xmx1024m", "-Xss1024k" ], ARGV
+        @wrapper.run_jar 'winstone', jar_file1, ["-Xmx1024m", "-Xss1024k" ], ARGV
     end
   end
 end

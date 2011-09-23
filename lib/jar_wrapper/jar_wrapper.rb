@@ -58,11 +58,17 @@ class JarWrapper
      unzip_file(destination) if destination =~ /\.zip$/
    end
    
-   def run name, jar_file, java_opts, args
+   def run_jar name, jar_file, java_opts, args
      runner = Runner.new
 
-     runner.run name, jar_file, java_opts, args    
+     runner.run_jar name, jar_file, java_opts, args    
    end
+
+    def run_cp name, class_path, main_class, java_opts, args
+     runner = Runner.new
+
+     runner.run_cp name, class_path, main_class, java_opts, args    
+   end  
 end
 
  
