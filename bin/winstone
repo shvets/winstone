@@ -51,7 +51,7 @@ class WinstoneStarter
        when 'tool' then
         ARGV.shift
         @wrapper.classpath = jar_file1
-        @wrapper.main_class = ARGV.shift
+        @wrapper.main_class = 'winstone.tools.WinstoneControl'
         @wrapper.run ARGV
       else
          @wrapper.jar_file = jar_file1
